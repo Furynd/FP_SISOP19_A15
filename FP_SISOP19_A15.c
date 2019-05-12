@@ -1,4 +1,3 @@
-    
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,7 +23,7 @@ int status_rm=0;
 int thr_bit[key];
 int cari(){
     int i;
-    for(i=0; i<100; i++) if(thr_bit[i]==0) return i;
+    for(i=0; i<key; i++) if(thr_bit[i]==0) return i;
 }
 
 typedef struct node{
@@ -115,11 +114,35 @@ int same(char s[], int arr[])
   time ( &rawtime );
   timeinfo = localtime ( &rawtime );
   
+  if(s[2]=='*' && s[4]=='*')
+  {
+      char tp; 
+      tp=s[2];
+      s[2]='*';
+
+      if( ( arr[0]==timeinfo->tm_min || s[0]=='*') &&
+        ( arr[1]==timeinfo->tm_hour || s[1]=='*') &&
+        ( arr[2]==timeinfo->tm_mday || s[2]=='*') &&
+        ( arr[3]==timeinfo->tm_mon+1 || s[3]=='*') &&
+        ( arr[4]==timeinfo->tm_wday || s[4]=='*') ) return 1;
+
+      s[2]=tp;
+      tp=s[4];
+      s[4]='*';
+
+      if( ( arr[0]==timeinfo->tm_min || s[0]=='*') &&
+        ( arr[1]==timeinfo->tm_hour || s[1]=='*') &&
+        ( arr[2]==timeinfo->tm_mday || s[2]=='*') &&
+        ( arr[3]==timeinfo->tm_mon+1 || s[3]=='*') &&
+        ( arr[4]==timeinfo->tm_wday || s[4]=='*') ) return 1;
+  }
+
   if( ( arr[0]==timeinfo->tm_min || s[0]=='*') &&
   ( arr[1]==timeinfo->tm_hour || s[1]=='*') &&
   ( arr[2]==timeinfo->tm_mday || s[2]=='*') &&
   ( arr[3]==timeinfo->tm_mon+1 || s[3]=='*') &&
   ( arr[4]==timeinfo->tm_wday || s[4]=='*') ) return 1;
+
   return 0;
 }
 
@@ -131,7 +154,7 @@ int main()
     struct stat stats;
     char modif[1000];
     char modif_tmp[1000];
-    char message[1000];
+    char message[1001];
 
     // set NULL list
     int i;
@@ -159,7 +182,7 @@ int main()
     {
         FILE *fptrr;
         fptrr = fopen("/home/mrx/crontab.data","r");
-        while(fgets(message,100,fptrr) != NULL)
+        while(fgets(message,1000,fptrr) != NULL)
         {
             if(message[0] != 10)
             {
@@ -187,7 +210,7 @@ void *print_message_function( void *ptr )
 {
     char *mess;
     mess = (char *) ptr;
-    char message_tmp[1000];
+    char message_tmp[1001];
     strcpy(message_tmp,mess);
     status=0;
     char mass[1000];
@@ -223,7 +246,7 @@ void *print_message_function( void *ptr )
             FILE *fptr;
             char messag[1000];
             fptr = fopen("/home/mrx/crontab.data","r");
-            while(fgets(messag,100,fptr) != NULL)
+            while(fgets(messag,1000,fptr) != NULL)
             {
                 if(messag[0] != 10)
                 {
@@ -241,6 +264,7 @@ void *print_message_function( void *ptr )
             {
                 system(mass);
                 flag=0;
+                sleep(60);
             }
             else
             {
