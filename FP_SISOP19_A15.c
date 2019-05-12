@@ -114,7 +114,7 @@ int same(char s[], int arr[])
   time ( &rawtime );
   timeinfo = localtime ( &rawtime );
   
-  if(s[2]=='*' && s[4]=='*')
+  if(s[2]!='*' && s[4]!='*')
   {
       char tp; 
       tp=s[2];
@@ -136,12 +136,14 @@ int same(char s[], int arr[])
         ( arr[3]==timeinfo->tm_mon+1 || s[3]=='*') &&
         ( arr[4]==timeinfo->tm_wday || s[4]=='*') ) return 1;
   }
-
+else
+{
   if( ( arr[0]==timeinfo->tm_min || s[0]=='*') &&
   ( arr[1]==timeinfo->tm_hour || s[1]=='*') &&
   ( arr[2]==timeinfo->tm_mday || s[2]=='*') &&
   ( arr[3]==timeinfo->tm_mon+1 || s[3]=='*') &&
   ( arr[4]==timeinfo->tm_wday || s[4]=='*') ) return 1;
+}
 
   return 0;
 }
